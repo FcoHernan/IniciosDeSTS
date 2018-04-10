@@ -5,11 +5,11 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
 <head>
 	<title>Formulario Libro</title>
+	<link rel="stylesheet" type="text/css" href="css/formato.css" />
 	<script type="text/javascript" src="js/validacion.js" ></script>
-	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/formato.css"/>
 </head>
 <body>		
-	<form action="destino.html" onsubmit="return validacion();" >
+	<form id="miformulario" action="InsertarLibro.jsp" onsubmit="return validacion();" >
 		<fieldset>
 			<legend>Formulario alta libro</legend>
 			<p>
