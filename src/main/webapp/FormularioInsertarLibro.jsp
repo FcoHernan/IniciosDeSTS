@@ -1,3 +1,7 @@
+<%@ page import="java.sql.ResultSet"%>
+<%@ page import="java.sql.SQLException"%>
+<%@ page import="cl.test.db.DataBaseHelper"%>
+
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html
 PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -22,7 +26,38 @@ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 			</p>
 			<p>
 				<label for="categoria">Categoria :</label>
-				<input id="categoria" type="text" name="categoria"/>
+<!-- 				<input id="categoria" type="text" name="categoria"/> -->
+				<select name="categoria">
+					<option value="seleccionar">seleccionar</option>
+					<%
+					ResultSet sr=null;
+					try {
+						String newConsultaSQL = "select distinct(categoria) from Libros";
+						DataBaseHelper newHelper = new DataBaseHelper();
+						sr=newHelper.seleccionarRegistros(newConsultaSQL);
+					while(sr.next()) { 
+					%>
+					<option id="categoria" value="<%=sr.getString("categoria")%>">
+					<%=sr.getString("categoria")%></option>
+					<% }%>
+				</select>
+				<br/>
+				<%
+				}
+				catch (SQLException e) {
+					System.out.println("Error accediendo a la base de datos"
+					+ e.getMessage());
+				} finally {
+					if (sr != null) {
+						try {
+							sr.close();
+						} 
+						catch (SQLException e) {
+							System.out.println("Error cerrando el resultset" + e.getMessage());
+						}
+					}
+				}
+				%>
 			</p>
 			<p>
 				<input type="submit" value="Insertar" />

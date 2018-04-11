@@ -1,63 +1,69 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-pageEncoding="UTF-8"%>
-<%@ page import="java.sql.Connection" %>
-<%@ page import="java.sql.Statement" %>
-<%@ page import="java.sql.DriverManager" %>
-<%@ page import="java.sql.SQLException" %>
-<%@ page import="java.sql.ResultSet" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>Lista de Libros</title>
-</head>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.sql.ResultSet"%>
+<%@ page import="java.sql.SQLException"%>
+<%@ page import="cl.test.db.DataBaseHelper"%>
 <body>
-	<%
-		Connection conexion=null;
-		Statement sentencia=null;
-		ResultSet rs=null;
+
+	<select name="categoria">
+		<option value="seleccionar">seleccionar</option>
+		<%
+		ResultSet sr=null;
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			//1 Crea un objeto conexión y un objeto sentencia.
-			conexion = DriverManager.getConnection("jdbc:mysql://localhost/arquitecturajava","root","");
-			sentencia= conexion.createStatement();
-			//2 Crea una consulta SQL de selección para todos los libros de la tabla.
-			String consultaSQL= "select isbn,titulo,categoria from Libros";
-			//3 Ejecuta la sentencia con su SQL
-			//4 Devuelve un ResultSet con todos los registros.
-			rs=sentencia.executeQuery(consultaSQL);
-			//5 Recorre el ResultSet y lo imprime en html.
-			while(rs.next()) {
-				%>
-				<%=rs.getString("isbn")%>
-				<%=rs.getString("titulo")%>
-				<%=rs.getString("categoria")%>
-				<br/>
-				<% 
-			}
-		}catch (ClassNotFoundException e) {
-			System.out.println("Error en la carga del driver" + e.getMessage());
-		}catch (SQLException e) {
-			System.out.println("Error accediendo a la base de datos"
-			+ e.getMessage());
-		}
-		finally {
-			//6 Cierra los recursos (conexión ,sentencia, etc).
-			if (rs != null) {
-			try {rs.close();} catch (SQLException e)
-			{System.out.println("Error cerrando el resultset" + e.getMessage());}
-			}
-			if (sentencia != null) {
-			try {sentencia.close();} catch (SQLException e)
-			{System.out.println("Error cerrando la sentencia" + e.getMessage());}
-			}
-			if (conexion != null) {
-			try {conexion.close();} catch (SQLException e)
-			{System.out.println("Error cerrando la conexion" + e.getMessage());}
+			String newConsultaSQL = "select distinct(categoria) from Libros";
+			DataBaseHelper newHelper = new DataBaseHelper();
+			sr=newHelper.seleccionarRegistros(newConsultaSQL);
+		while(sr.next()) { 
+		%>
+		<option value="<%=sr.getString("categoria")%>">
+		<%=sr.getString("categoria")%></option>
+		<% }%>
+	</select>
+	<br/>
+	<%
+	}
+	catch (SQLException e) {
+		System.out.println("Error accediendo a la base de datos"
+		+ e.getMessage());
+	} finally {
+		if (sr != null) {
+			try {
+				sr.close();
+			} 
+			catch (SQLException e) {
+				System.out.println("Error cerrando el resultset" + e.getMessage());
 			}
 		}
+	}
+	%>
+			
+	<%
+	ResultSet rs = null;
+	try {
+		String consultaSQL = "select isbn,titulo,categoria from Libros";
+		DataBaseHelper helper = new DataBaseHelper();
+		rs = helper.seleccionarRegistros(consultaSQL);
+		while (rs.next()) {
+			%>
+			<%=rs.getString("isbn")%>
+			<%=rs.getString("titulo")%>
+			<%=rs.getString("categoria")%>
+			<br />
+			<%
+		}
+	}
+	catch (SQLException e) {
+		System.out.println("Error accediendo a la base de datos"
+		+ e.getMessage());
+	} finally {
+		if (rs != null) {
+			try {
+				rs.close();
+			} 
+			catch (SQLException e) {
+				System.out.println("Error cerrando el resultset" + e.getMessage());
+			}
+		}
+	}
 	%>
 	<a href="FormularioInsertarLibro.jsp">Insertar Libro</a>
 </body>
-</html>
