@@ -18,8 +18,7 @@ public class DataBaseHelper {
 		int filasAfectadas = 0;
 		try {
 			Class.forName(DRIVER);
-			conexion = DriverManager.getConnection(URL,
-			USUARIO, CLAVE);
+			conexion = DriverManager.getConnection(URL, USUARIO, CLAVE);
 			sentencia = conexion.createStatement();
 			filasAfectadas = sentencia.executeUpdate(consultaSQL);
 		} catch (ClassNotFoundException e) {
